@@ -1,0 +1,5 @@
+# Normaliza los saltos de línea para que Windows, macOS y Linux no generen conflictos falsos
+* text=auto
+*.java text eol=lf
+*.xml text eol=lf
+*.md text eol=lf

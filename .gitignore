@@ -1,0 +1,29 @@
+# Compilación de Maven
+target/
+
+# Clases compiladas
+*.class
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Otros IDE
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Registros y temporales
+*.log
+*.tmp
+hs_err_pid*
