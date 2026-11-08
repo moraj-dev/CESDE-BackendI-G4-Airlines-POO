@@ -16,12 +16,6 @@ public class AirlineService {
 private final AirlineRepository repository;
 private final IdGenerator idGenerator;
 
-/**
- * Constructor con inyección de dependencias.
- *
- * @param repository  Repositorio para el acceso a datos.
- * @param idGenerator Generador de IDs configurado (arranque 100, paso 10).
- */
 public AirlineService(AirlineRepository repository, IdGenerator idGenerator) {
     this.repository = Validator.requireNotNull(repository, "repositorio de aerolíneas");
     this.idGenerator = Validator.requireNotNull(idGenerator, "generador de IDs");
