@@ -28,11 +28,11 @@ public class DbConnection {
         String database = env("DB_NAME", DEFAULT_DATABASE);
         this.url = "jdbc:sqlserver://%s:%s;databaseName=%s;encrypt=false".formatted(host, port, database);
         this.user = env("DB_USER", DEFAULT_USER);
-        this.password = System.getenv("DB_PASSWORD");
+        this.password = env("DB_PASSWORD", null);
     }
 
     public Connection getConnection() throws SQLException {
-        if (password == null) {
+        if (password == null || password.isBlank()) {
             throw new SQLException("Falta la variable de entorno DB_PASSWORD.");
         }
         return DriverManager.getConnection(url, user, password);
@@ -40,6 +40,9 @@ public class DbConnection {
 
     private static String env(String name, String fallback) {
         String value = System.getenv(name);
-        return value == null || value.isBlank() ? fallback : value;
+        if (value == null || value.isBlank()) {
+            value = System.getProperty(name);
+        }
+        return (value == null || value.isBlank()) ? fallback : value;
     }
 }
