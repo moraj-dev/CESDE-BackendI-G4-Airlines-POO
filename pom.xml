@@ -17,10 +17,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <junit.version>5.11.4</junit.version>
+        <mssql-jdbc.version>12.8.1.jre11</mssql-jdbc.version>
         <main.class>com.airlinespoo.app.Main</main.class>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>${mssql-jdbc.version}</version>
+        </dependency>
         <!-- Solo se usa para probar el kit base del docente -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
