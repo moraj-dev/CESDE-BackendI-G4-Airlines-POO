@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import com.airlinespoo.core.exception.NotFoundException;
 /**
  * Repositorio de persistencia para aerolíneas conectado a Microsoft SQL Server.
  */
@@ -109,7 +109,7 @@ public Airline update(Airline airline) {
         ps.setString(1, airline.getName());
         ps.setInt(2, airline.getId());
         if (ps.executeUpdate() == 0) {
-            throw new IllegalArgumentException("No se encontró la aerolínea con ID: " + airline.getId());
+            throw new NotFoundException("No se encontró la aerolínea con ID: " + airline.getId());
         }
         return airline;
     } catch (SQLException e) {
