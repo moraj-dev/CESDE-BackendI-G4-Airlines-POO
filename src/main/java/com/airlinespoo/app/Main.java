@@ -3,7 +3,10 @@ package com.airlinespoo.app;
 import com.airlinespoo.airlines.repository.AirlineRepository;
 import com.airlinespoo.airlines.service.AirlineService;
 import com.airlinespoo.airlines.ui.AirlineMenu;
+import com.airlinespoo.core.ui.Menu;
 import com.airlinespoo.core.util.IdGenerator;
+
+import java.util.List;
 
 /**
  * Punto de entrada de AirlinesPOO.
@@ -28,8 +31,11 @@ public static void main(String[] args) {
     // 3. Inyección de dependencias en el servicio
     AirlineService service = new AirlineService(repository, idGenerator);
 
-    // 4. Iniciar menú interactivo
-    AirlineMenu menu = new AirlineMenu(service);
-    menu.run();
+    // 4. Crear submenú del módulo y menú principal
+    Menu menu = new AirlineMenu(service);
+    MainMenu mainMenu = new MainMenu(List.of(menu));
+
+    // 5. Iniciar menú principal
+    mainMenu.run();
 }
 }
