@@ -25,7 +25,7 @@ public class City implements Identifiable<Integer> {
     }
     public void setName(String name) {
         // Valida que el dato no sea null o este vacio
-        String validatedName = Validator.requireText(name, "nombre de ciudad");
+        String validatedName = Validator.requireText(name, "Nombre de ciudad");
 
         // Valida que el dato no tenga mas de 20 caracteres
         if (validatedName.trim().length() > 20) {
