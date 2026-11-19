@@ -16,13 +16,14 @@ seatNumber es el número de la fila
 public final class Seat {
 
     private static final Pattern FORMAT = Pattern.compile("(\\d{1,2})([A-HJK])");
+    private static final int MAX_LENGTH_ROW = 2;
 
     private final String rowNumber;
     private final int seatNumber;
 
     public Seat (int seatNumber, String rowNumber) {
         this.seatNumber = (int) Validator.requirePositive(seatNumber,"número de la silla");
-        this.rowNumber = Validator.requireText(rowNumber,"fila de la silla",2).toUpperCase();
+        this.rowNumber = Validator.requireText(rowNumber,"fila de la silla",MAX_LENGTH_ROW).toUpperCase();
     }
 
     public int getSeatNumber() {
@@ -43,6 +44,7 @@ public final class Seat {
         return new Seat(Integer.parseInt(m.group(1)), m.group(2));
     }
 
+    // Compara si dos objetos tipo Seat son iguales
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,11 +53,13 @@ public final class Seat {
         return seatNumber == other.seatNumber && rowNumber.equals(other.rowNumber);
     }
 
+    // Codigo hash
     @Override
     public int hashCode() {
         return Objects.hash(seatNumber, rowNumber);
     }
 
+    // Convierte a String la informacion en seat+row
     @Override
     public String toString() {
         return seatNumber + rowNumber;

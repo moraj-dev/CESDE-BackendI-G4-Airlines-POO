@@ -11,7 +11,7 @@ import java.util.Objects;
 public class ReservationDetail {
 
     private static final int MAX_LENGTH_NAME = 50;
-    private static final int MAX_LENGTH_DOCUMENT = 20
+    private static final int MAX_LENGTH_DOCUMENT = 20;
 
     private final int id;
     private String passengerFullName;
@@ -71,5 +71,4 @@ public class ReservationDetail {
     public String toString() {
         return passengerFullName + " (" + passengerDocument + ") - silla " + seat;
     }
-
 }
