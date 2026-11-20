@@ -23,6 +23,9 @@ import com.airlinespoo.locations.repository.AirportRepository;
 import com.airlinespoo.locations.repository.CityRepository;
 import com.airlinespoo.locations.service.LocationService;
 import com.airlinespoo.locations.ui.LocationMenu;
+import com.airlinespoo.reservations.repository.ReservationRepository;
+import com.airlinespoo.reservations.service.ReservationService;
+import com.airlinespoo.reservations.ui.ReservationsMenu;
 
 import java.util.List;
 
@@ -66,11 +69,10 @@ public static void main(String[] args) {
     FlightService flightService = new FlightService(
         flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
-    // Módulo 5: Reservas (activar cuando se ajusten los constructores en reservations)
-    // ReservationRepository reservationRepository = new ReservationRepository();
-    // ReservationService reservationService = new ReservationService(
-    //         reservationRepository, customerService, flightService,
-    //         new IdGenerator(1, 1), new IdGenerator(1, 1));
+    // Módulo 5: Reservas
+    ReservationRepository reservationRepository = new ReservationRepository(customerRepository,flightRepository);
+    ReservationService reservationService = new ReservationService(reservationRepository, customerService,
+        flightService, new IdGenerator(1, 1), new IdGenerator(1, 1));
 
     // Menús de los módulos
     Menu customerMenu = new CustomerMenu(customerService, console);
@@ -79,8 +81,7 @@ public static void main(String[] args) {
     Menu locationMenu = new LocationMenu(console, locationService);
     Menu airlineMenu = new AirlineMenu(airlineService);
     Menu flightMenu = new FlightMenu(console, flightService, locationService, airlineService);
-    // Menu reservationMenu = new ReservationsMenu(
-    //         reservationService, customerService, flightService, console);
+    Menu reservationMenu = new ReservationsMenu(console, reservationService, customerService, flightService);
 
     MainMenu mainMenu = new MainMenu(List.of(
         customerMenu,
@@ -88,8 +89,8 @@ public static void main(String[] args) {
         documentTypeMenu,
         locationMenu,
         airlineMenu,
-        flightMenu
-        // reservationMenu
+        flightMenu,
+        reservationMenu
     ));
     mainMenu.run();
 }

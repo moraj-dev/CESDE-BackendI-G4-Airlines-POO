@@ -19,8 +19,8 @@ import java.util.Optional;
 
 public class ReservationRepository implements IReservationRepository {
 
-    CustomerRepository customerRepository = new CustomerRepository();
-    FlightRepository flightRepository = new FlightRepository();
+    private final CustomerRepository customerRepository;
+    private final FlightRepository flightRepository;
 
     // Nombres de las tablas en SQL Server
     private static final String SQL_TABLE_RESERVATION = "tblReservations";
@@ -28,6 +28,10 @@ public class ReservationRepository implements IReservationRepository {
 
     private record Brief (int id, String customerId, Integer flightId) { }
 
+    public ReservationRepository(CustomerRepository customerRepository, FlightRepository flightRepository) {
+        this.customerRepository = customerRepository;
+        this.flightRepository = flightRepository;
+    }
 
     // --------------- Conexion a SQL Server ------------------
     private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=AirlinesDB;encrypt=true;trustServerCertificate=true";
