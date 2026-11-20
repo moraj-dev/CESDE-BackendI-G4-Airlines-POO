@@ -28,6 +28,20 @@ public class Flight implements Identifiable<Integer>, Comparable<Flight> {
     private final LocalTime arrivalTime;
     private final Airline airline;
 
+    /**
+     * Crea un vuelo validando sus datos y que la llegada sea posterior a la salida.
+     *
+     * @param id identificador positivo del vuelo
+     * @param flightName código alfanumérico del vuelo
+     * @param departure aeropuerto de salida
+     * @param arrival aeropuerto de llegada
+     * @param departureDate fecha de salida
+     * @param departureTime hora de salida
+     * @param arrivalDate fecha de llegada
+     * @param arrivalTime hora de llegada
+     * @param airline aerolínea operadora
+     * @throws ValidationException si algún dato es inválido
+     */
     public Flight(int id, String flightName, Airport departure, Airport arrival,
                   LocalDate departureDate, LocalTime departureTime,
                   LocalDate arrivalDate, LocalTime arrivalTime, Airline airline) {
@@ -56,75 +70,126 @@ public class Flight implements Identifiable<Integer>, Comparable<Flight> {
         return code;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Integer getId() {
         return id;
     }
 
+    /**
+     * @return código normalizado del vuelo
+     */
     public String getFlightName() {
         return flightName;
     }
 
+    /**
+     * @return aeropuerto de salida
+     */
     public Airport getDeparture() {
         return departure;
     }
 
+    /**
+     * @return aeropuerto de llegada
+     */
     public Airport getArrival() {
         return arrival;
     }
 
+    /**
+     * @return fecha de salida
+     */
     public LocalDate getDepartureDate() {
         return departureDate;
     }
 
+    /**
+     * @return hora de salida
+     */
     public LocalTime getDepartureTime() {
         return departureTime;
     }
 
+    /**
+     * @return fecha de llegada
+     */
     public LocalDate getArrivalDate() {
         return arrivalDate;
     }
 
+    /**
+     * @return hora de llegada
+     */
     public LocalTime getArrivalTime() {
         return arrivalTime;
     }
 
+    /**
+     * @return aerolínea operadora
+     */
     public Airline getAirline() {
         return airline;
     }
 
+    /**
+     * @return fecha y hora completas de salida
+     */
     public LocalDateTime getDepartureDateTime() {
         return LocalDateTime.of(departureDate, departureTime);
     }
 
+    /**
+     * @return fecha y hora completas de llegada
+     */
     public LocalDateTime getArrivalDateTime() {
         return LocalDateTime.of(arrivalDate, arrivalTime);
     }
 
+    /**
+     * @return duración entre la salida y la llegada
+     */
     public Duration getDuration() {
         return Duration.between(getDepartureDateTime(), getArrivalDateTime());
     }
 
+    /**
+     * Indica si el vuelo ya salió en el instante indicado.
+     *
+     * @param now instante de referencia
+     * @return {@code true} si la salida ya ocurrió
+     */
     public boolean hasDeparted(LocalDateTime now) {
         return !getDepartureDateTime().isAfter(now);
     }
 
+    /**
+     * Compara primero por fecha de salida y luego por identificador.
+     *
+     * @param other vuelo con el que se compara
+     * @return valor negativo, cero o positivo según el orden
+     */
     @Override
     public int compareTo(Flight other) {
         int result = getDepartureDateTime().compareTo(other.getDepartureDateTime());
         return result != 0 ? result : Integer.compare(id, other.id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean equals(Object o) {
         return this == o || (o instanceof Flight other && id == other.id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "%s | %s -> %s | salida %s | llegada %s".formatted(

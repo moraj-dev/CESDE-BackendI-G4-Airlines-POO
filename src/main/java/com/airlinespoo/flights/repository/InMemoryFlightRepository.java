@@ -13,11 +13,13 @@ import java.util.Optional;
 public class InMemoryFlightRepository extends InMemoryRepository<Flight, Integer>
         implements FlightRepository {
 
+    /** {@inheritDoc} */
     @Override
     protected String entityName() {
         return "vuelo";
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Flight> findByFlightName(String name) {
         return values().stream()
@@ -25,6 +27,7 @@ public class InMemoryFlightRepository extends InMemoryRepository<Flight, Integer
                 .findFirst();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByAirline(Airline airline) {
         return values().stream()
@@ -32,6 +35,7 @@ public class InMemoryFlightRepository extends InMemoryRepository<Flight, Integer
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByDepartureDateBetween(LocalDate from, LocalDate to) {
         return values().stream()
@@ -39,6 +43,7 @@ public class InMemoryFlightRepository extends InMemoryRepository<Flight, Integer
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByRoute(Airport departure, Airport arrival) {
         return values().stream()
@@ -46,16 +51,19 @@ public class InMemoryFlightRepository extends InMemoryRepository<Flight, Integer
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public long countByAirline(Airline airline) {
         return values().stream().filter(f -> f.getAirline().equals(airline)).count();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsByAirline(Airline airline) {
         return values().stream().anyMatch(f -> f.getAirline().equals(airline));
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsByAirport(Airport airport) {
         return values().stream()

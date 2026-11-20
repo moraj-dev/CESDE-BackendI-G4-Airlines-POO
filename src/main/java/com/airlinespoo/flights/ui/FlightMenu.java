@@ -28,6 +28,14 @@ public class FlightMenu implements Menu {
     private final LocationService locationService;
     private final AirlineService airlineService;
 
+    /**
+     * Crea el menú de vuelos con sus dependencias.
+     *
+     * @param console entrada y salida de consola
+     * @param flightService servicio de vuelos
+     * @param locationService servicio de ubicaciones
+     * @param airlineService servicio de aerolíneas
+     */
     public FlightMenu(ConsoleInput console, FlightService flightService,
                       LocationService locationService, AirlineService airlineService) {
         this.console = console;
@@ -36,11 +44,13 @@ public class FlightMenu implements Menu {
         this.airlineService = airlineService;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String title() {
         return "Vuelos";
     }
 
+    /** {@inheritDoc} */
     @Override
     public void run() {
         int option;

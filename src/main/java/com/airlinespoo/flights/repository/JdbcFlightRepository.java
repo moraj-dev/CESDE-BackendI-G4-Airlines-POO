@@ -52,11 +52,23 @@ public class JdbcFlightRepository implements FlightRepository {
 
     private final DbConnection db;
 
+    /**
+     * Crea el repositorio con la fuente de conexiones.
+     *
+     * @param db proveedor de conexiones JDBC
+     */
     public JdbcFlightRepository(DbConnection db) {
         this.db = db;
     }
 
-    /** INSERT. El id lo genera SQL Server (IDENTITY), así que se devuelve un vuelo con el id real. */
+    /**
+     * Guarda un vuelo. SQL Server genera el identificador con identidad.
+     *
+     * @param flight vuelo a insertar
+     * @return el vuelo con el identificador generado
+     * @throws DuplicateException si el código ya existe
+     * @throws AirlinesException si ocurre un error de base de datos
+     */
     @Override
     public Flight create(Flight flight) {
         try (Connection conn = db.getConnection();
@@ -74,18 +86,26 @@ public class JdbcFlightRepository implements FlightRepository {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Flight> findById(Integer id) {
         return query(SELECT_FLIGHTS + "WHERE f.FlightId = ?", "buscar el vuelo", id)
                 .stream().findFirst();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findAll() {
         return query(SELECT_FLIGHTS + "ORDER BY f.DateDeparture, f.HourDeparture", "listar los vuelos");
     }
 
-    /** UPDATE. Si no se afectó ninguna fila, el vuelo no existe. */
+    /**
+     * Actualiza un vuelo existente.
+     *
+     * @param flight vuelo con los datos nuevos
+     * @return el vuelo actualizado
+     * @throws NotFoundException si no existe el identificador
+     */
     @Override
     public Flight update(Flight flight) {
         try (Connection conn = db.getConnection();
@@ -101,6 +121,7 @@ public class JdbcFlightRepository implements FlightRepository {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean deleteById(Integer id) {
         String sql = "DELETE FROM tblFlights WHERE FlightId = ?";
@@ -113,51 +134,60 @@ public class JdbcFlightRepository implements FlightRepository {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsById(Integer id) {
         return scalar("SELECT COUNT(*) FROM tblFlights WHERE FlightId = ?", "consultar el vuelo", id) > 0;
     }
 
+    /** {@inheritDoc} */
     @Override
     public long count() {
         return scalar("SELECT COUNT(*) FROM tblFlights", "contar los vuelos");
     }
 
+    /** {@inheritDoc} */
     @Override
     public Optional<Flight> findByFlightName(String name) {
         return query(SELECT_FLIGHTS + "WHERE f.FlightName = ?", "buscar el vuelo por código", name)
                 .stream().findFirst();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByAirline(Airline airline) {
         return query(SELECT_FLIGHTS + "WHERE f.AirlineId = ?", "listar vuelos de la aerolínea",
                 airline.getId());
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByDepartureDateBetween(LocalDate from, LocalDate to) {
         return query(SELECT_FLIGHTS + "WHERE f.DateDeparture BETWEEN ? AND ?",
                 "listar vuelos por fechas", from, to);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Flight> findByRoute(Airport departure, Airport arrival) {
         return query(SELECT_FLIGHTS + "WHERE f.Departure = ? AND f.Arrival = ?",
                 "listar vuelos por ruta", departure.getId().toString(), arrival.getId().toString());
     }
 
+    /** {@inheritDoc} */
     @Override
     public long countByAirline(Airline airline) {
         return scalar("SELECT COUNT(*) FROM tblFlights WHERE AirlineId = ?",
                 "contar vuelos de la aerolínea", airline.getId());
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsByAirline(Airline airline) {
         return countByAirline(airline) > 0;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsByAirport(Airport airport) {
         String id = airport.getId().toString();

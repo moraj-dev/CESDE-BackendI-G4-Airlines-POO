@@ -22,6 +22,9 @@ public class DbConnection {
     private final String user;
     private final String password;
 
+    /**
+     * Crea la configuración de conexión leyendo las variables de entorno o propiedades del sistema.
+     */
     public DbConnection() {
         String host = env("DB_HOST", DEFAULT_HOST);
         String port = env("DB_PORT", DEFAULT_PORT);
@@ -31,6 +34,12 @@ public class DbConnection {
         this.password = env("DB_PASSWORD", null);
     }
 
+    /**
+     * Abre una conexión con la base de datos configurada.
+     *
+     * @return una conexión activa
+     * @throws SQLException si falta la contraseña o no se puede conectar
+     */
     public Connection getConnection() throws SQLException {
         if (password == null || password.isBlank()) {
             throw new SQLException("Falta la variable de entorno DB_PASSWORD.");

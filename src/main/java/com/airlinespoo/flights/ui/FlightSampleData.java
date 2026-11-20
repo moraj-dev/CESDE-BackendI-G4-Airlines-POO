@@ -16,6 +16,13 @@ public class FlightSampleData {
     private final LocationService locationService;
     private final AirlineService airlineService;
 
+    /**
+     * Crea el cargador de datos de ejemplo.
+     *
+     * @param flightService servicio de vuelos
+     * @param locationService servicio de ubicaciones
+     * @param airlineService servicio de aerolíneas
+     */
     public FlightSampleData(FlightService flightService, LocationService locationService,
                             AirlineService airlineService) {
         this.flightService = flightService;
@@ -23,6 +30,9 @@ public class FlightSampleData {
         this.airlineService = airlineService;
     }
 
+    /**
+     * Carga ocho vuelos de ejemplo si existen aeropuertos y aerolíneas suficientes.
+     */
     public void load() {
         List<Airport> ap = locationService.listAirports();
         List<Airline> al = airlineService.listAirlines();

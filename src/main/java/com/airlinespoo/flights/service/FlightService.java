@@ -25,7 +25,9 @@ import java.util.UUID;
 /** Reglas de negocio de vuelos. */
 public class FlightService {
 
+    /** Año mínimo permitido en los reportes. */
     public static final int MIN_YEAR = 2000;
+    /** Año máximo permitido en los reportes. */
     public static final int MAX_YEAR = 2100;
 
     private final FlightRepository flightRepository;
@@ -33,6 +35,14 @@ public class FlightService {
     private final AirlineService airlineService;
     private final IdGenerator flightIds;
 
+    /**
+     * Crea el servicio de vuelos con sus dependencias.
+     *
+     * @param flightRepository repositorio de vuelos
+     * @param locationService servicio de ubicaciones
+     * @param airlineService servicio de aerolíneas
+     * @param flightIds generador de identificadores
+     */
     public FlightService(FlightRepository flightRepository, LocationService locationService,
                          AirlineService airlineService, IdGenerator flightIds) {
         this.flightRepository = flightRepository;
@@ -41,6 +51,19 @@ public class FlightService {
         this.flightIds = flightIds;
     }
 
+    /**
+     * Crea y guarda un vuelo.
+     *
+     * @param flightName código del vuelo
+     * @param departureAirportId identificador del aeropuerto de salida
+     * @param arrivalAirportId identificador del aeropuerto de llegada
+     * @param departureDate fecha de salida
+     * @param departureTime hora de salida
+     * @param arrivalDate fecha de llegada
+     * @param arrivalTime hora de llegada
+     * @param airlineId identificador de la aerolínea
+     * @return el vuelo creado
+     */
     public Flight createFlight(String flightName, UUID departureAirportId, UUID arrivalAirportId,
                                LocalDate departureDate, LocalTime departureTime,
                                LocalDate arrivalDate, LocalTime arrivalTime, int airlineId) {
@@ -53,11 +76,25 @@ public class FlightService {
         return saved;
     }
 
+    /**
+     * Busca un vuelo por identificador.
+     *
+     * @param id identificador del vuelo
+     * @return el vuelo encontrado
+     * @throws NotFoundException si no existe
+     */
     public Flight getFlight(int id) {
         return flightRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("vuelo", id));
     }
 
+    /**
+     * Busca un vuelo por código.
+     *
+     * @param flightName código del vuelo
+     * @return el vuelo encontrado
+     * @throws NotFoundException si no existe
+     */
     public Flight getFlightByName(String flightName) {
         String code = Validator.requireText(flightName, "código del vuelo");
         return flightRepository.findByFlightName(code)
@@ -65,10 +102,25 @@ public class FlightService {
                         "No existe un vuelo con el código '%s'.".formatted(code)));
     }
 
+    /** @return todos los vuelos ordenados por salida e identificador */
     public List<Flight> listFlights() {
         return sorted(flightRepository.findAll());
     }
 
+    /**
+     * Actualiza los datos de un vuelo existente.
+     *
+     * @param id identificador del vuelo
+     * @param flightName código del vuelo
+     * @param departureAirportId identificador del aeropuerto de salida
+     * @param arrivalAirportId identificador del aeropuerto de llegada
+     * @param departureDate fecha de salida
+     * @param departureTime hora de salida
+     * @param arrivalDate fecha de llegada
+     * @param arrivalTime hora de llegada
+     * @param airlineId identificador de la aerolínea
+     * @return el vuelo actualizado
+     */
     public Flight updateFlight(int id, String flightName, UUID departureAirportId, UUID arrivalAirportId,
                                LocalDate departureDate, LocalTime departureTime,
                                LocalDate arrivalDate, LocalTime arrivalTime, int airlineId) {
@@ -79,17 +131,32 @@ public class FlightService {
         return flightRepository.update(updated);
     }
 
+    /**
+     * Elimina un vuelo existente.
+     *
+     * @param id identificador del vuelo
+     * @throws NotFoundException si el vuelo no existe
+     */
     public void deleteFlight(int id) {
         getFlight(id);
         // Pendiente de integración: impedir si el vuelo tiene reservas (flightHasReservations)
         flightRepository.deleteById(id);
     }
 
+    /** @param airlineId identificador de la aerolínea
+     *  @return vuelos de la aerolínea */
     public List<Flight> listFlightsByAirline(int airlineId) {
         Airline airline = airlineService.getAirline(airlineId);
         return sorted(flightRepository.findByAirline(airline));
     }
 
+    /**
+     * Lista los vuelos cuya salida ocurre dentro del rango indicado.
+     *
+     * @param from fecha inicial
+     * @param to fecha final
+     * @return vuelos encontrados
+     */
     public List<Flight> listFlightsBetween(LocalDate from, LocalDate to) {
         Validator.requireNotNull(from, "fecha inicial");
         Validator.requireNotNull(to, "fecha final");
@@ -99,24 +166,44 @@ public class FlightService {
         return sorted(flightRepository.findByDepartureDateBetween(from, to));
     }
 
+    /**
+     * Lista los vuelos de una ruta específica.
+     *
+     * @param departureId identificador del aeropuerto de salida
+     * @param arrivalId identificador del aeropuerto de llegada
+     * @return vuelos encontrados
+     */
     public List<Flight> listFlightsByRoute(UUID departureId, UUID arrivalId) {
         Airport departure = locationService.getAirport(departureId);
         Airport arrival = locationService.getAirport(arrivalId);
         return sorted(flightRepository.findByRoute(departure, arrival));
     }
 
+    /** @param airlineId identificador de la aerolínea
+     *  @return cantidad de vuelos */
     public long countFlightsByAirline(int airlineId) {
         return flightRepository.countByAirline(airlineService.getAirline(airlineId));
     }
 
+    /** @param airlineId identificador de la aerolínea
+     *  @return {@code true} si la aerolínea tiene vuelos */
     public boolean airlineHasFlights(int airlineId) {
         return flightRepository.existsByAirline(airlineService.getAirline(airlineId));
     }
 
+    /** @param airportId identificador del aeropuerto
+     *  @return {@code true} si el aeropuerto aparece en algún vuelo */
     public boolean airportHasFlights(UUID airportId) {
         return flightRepository.existsByAirport(locationService.getAirport(airportId));
     }
 
+    /**
+     * Genera el reporte mensual de vuelos agrupados por aerolínea.
+     *
+     * @param year año del reporte
+     * @param month mes del reporte, entre 1 y 12
+     * @return vuelos del mes agrupados por aerolínea
+     */
     public Map<Airline, List<FlightReportRow>> listFlightsByAirlineInMonth(int year, int month) {
         Validator.requireInRange(year, MIN_YEAR, MAX_YEAR, "año");
         Validator.requireInRange(month, 1, 12, "mes");

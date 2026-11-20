@@ -37,6 +37,9 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID> impleme
      */
     protected abstract String entityName();
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T create(T entity) {
         Validator.requireNotNull(entity, entityName());
@@ -48,16 +51,25 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID> impleme
         return entity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<T> findById(ID id) {
         return Optional.ofNullable(store.get(id));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<T> findAll() {
         return new ArrayList<>(store.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public T update(T entity) {
         Validator.requireNotNull(entity, entityName());
@@ -69,16 +81,25 @@ public abstract class InMemoryRepository<T extends Identifiable<ID>, ID> impleme
         return entity;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean deleteById(ID id) {
         return store.remove(id) != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean existsById(ID id) {
         return store.containsKey(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long count() {
         return store.size();
