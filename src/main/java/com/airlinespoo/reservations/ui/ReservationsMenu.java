@@ -24,17 +24,14 @@ import java.util.Set;
  */
 
 public class ReservationsMenu implements Menu {
-    private final ConsoleInput console;
     private final IReservationService reservationService;
-    private final CustomerService customerService;
-    private final FlightService flightService;
 
-    public ReservationsMenu(ConsoleInput console, IReservationService reservationService,
-                            CustomerService customerService, FlightService flightService) {
-        this.console = console;
+    ConsoleInput console = new ConsoleInput();
+    CustomerService customerService = new CustomerService();
+    FlightService flightService = new FlightService();
+
+    public ReservationsMenu(IReservationService reservationService) {
         this.reservationService = reservationService;
-        this.customerService = customerService;
-        this.flightService = flightService;
     }
 
     @Override

@@ -24,21 +24,17 @@ import java.util.List;
 
 public class ReservationService implements IReservationService{
     private final IReservationRepository reservationRepository;
-    private final FlightService flightService;
-    private final CustomerService customerService;
-    private final IdGenerator reservationIds;
-    private final IdGenerator detailIds;
 
     private static final Comparator<Seat> SEAT_ORDER =
         Comparator.comparingInt(Seat::getSeatNumber).thenComparing(Seat::getRowNumber);
 
-    public ReservationService(IReservationRepository reservationRepository, FlightService flightService,
-                              CustomerService customerService, IdGenerator reservationIds, IdGenerator detailIds) {
+    FlightService flightService = new FlightService();
+    CustomerService customerService = new CustomerService();
+    IdGenerator reservationIds = new IdGenerator();
+    IdGenerator detailIds = new IdGenerator();
+
+    public ReservationService(IReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-        this.flightService = flightService;
-        this.customerService = customerService;
-        this.reservationIds = reservationIds;
-        this.detailIds = detailIds;
     }
 
     @Override
