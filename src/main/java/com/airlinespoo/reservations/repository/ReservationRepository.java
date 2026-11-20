@@ -214,10 +214,10 @@ public class ReservationRepository implements IReservationRepository {
                 while (rs.next()) {
                     int detailId = rs.getInt("DetailId");
                     String row = rs.getString("RowNumber");
-                    int number = rs.getInt("SeatNumer")
+                    int number = rs.getInt("SeatNumer");
 
                     if (row == null || row.isBlank() || rs.wasNull()) {
-                        throw new AirlinesException("El pasajero #" + detailId + " de la reserva #" + reservationId + " no tiene silla completa en la base de datos."
+                        throw new AirlinesException("El pasajero #" + detailId + " de la reserva #" + reservationId + " no tiene silla completa en la base de datos.");
                     }
                     list.add(new ReservationDetail(detailId,
                             rs.getString("PassangerFullName"),

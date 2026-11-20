@@ -88,7 +88,7 @@ public class Reservation implements Identifiable<Integer> {
     public void changeSeat(int detailId, Seat newSeat) {
         Validator.requireNotNull(newSeat,"Silla");
         ReservationDetail detail = find(detailId)
-            .orElseThrow(() -> new ValidationException("El pasajero " + detailId + " no está en la reserva.");
+            .orElseThrow(() -> new ValidationException("El pasajero " + detailId + " no está en la reserva."));
         for (ReservationDetail other : details) {
             if (other.getId() != detailId && other.getSeat().equals(newSeat)) {
                 throw new ValidationException("La silla " + newSeat + " ya está asignada en esta reserva.");
