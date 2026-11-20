@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class Reservation implements Identifiable<Integer> {
 
-    private static final int MAX_PASSENGERS = 10;
+    public static final int MAX_PASSENGERS = 10;
 
     private final int id;
     private Customer customer;
