@@ -4,7 +4,7 @@ import com.airlinespoo.core.exception.ValidationException;
 import com.airlinespoo.core.model.Identifiable;
 import com.airlinespoo.core.exception.BusinessRuleException;
 import com.airlinespoo.core.util.Validator;
-import com.airlinespoo.flights.model.Customer;
+import com.airlinespoo.customers.model.Customer;
 import com.airlinespoo.flights.model.Flight;
 
 import java.util.*;

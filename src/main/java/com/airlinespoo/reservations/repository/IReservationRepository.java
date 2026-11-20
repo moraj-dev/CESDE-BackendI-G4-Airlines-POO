@@ -2,7 +2,7 @@ package com.airlinespoo.reservations.repository;
 
 import com.airlinespoo.core.repository.Repository;
 import com.airlinespoo.reservations.model.Reservation;
-import com.airlinespoo.flights.model.Customer;
+import com.airlinespoo.customers.model.Customer;
 import com.airlinespoo.flights.model.Flight;
 
 import java.util.List;

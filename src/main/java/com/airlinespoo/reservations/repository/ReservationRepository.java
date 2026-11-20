@@ -2,8 +2,10 @@ package com.airlinespoo.reservations.repository;
 
 import com.airlinespoo.core.exception.*;
 import com.airlinespoo.reservations.model.Reservation;
-import com.airlinespoo.flights.model.Customer;
+import com.airlinespoo.customers.model.Customer;
 import com.airlinespoo.flights.model.Flight;
+import com.airlinespoo.customers.repository.CustomerRepository;
+import com.airlinespoo.flights.repository.FlightRepository;
 import com.airlinespoo.reservations.model.ReservationDetail;
 import com.airlinespoo.reservations.model.Seat;
 
