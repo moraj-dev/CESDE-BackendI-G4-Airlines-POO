@@ -1,41 +1,28 @@
 package com.airlinespoo.app;
 
-import com.airlinespoo.airlines.repository.AirlineRepository;
-import com.airlinespoo.airlines.service.AirlineService;
-import com.airlinespoo.airlines.ui.AirlineMenu;
-import com.airlinespoo.core.ui.Menu;
-import com.airlinespoo.core.util.IdGenerator;
-
-import java.util.List;
-
 /**
- * Punto de entrada de AirlinesPOO.
- * Ensambla los componentes del sistema y ejecuta la interfaz de usuario.
+ * Punto de entrada de Airlines-poo.
+ *
+ * <p>Esta es una clase <b>provisional</b> que entrega el docente para que el proyecto se
+ * pueda ejecutar desde el primer día. El estudiante del Módulo 3 la reemplaza al final
+ * por la versión que ensambla todos los módulos (lector de consola, generadores de ids,
+ * repositorios, servicios, datos de ejemplo y menús) y arranca el menú principal.</p>
  */
 public final class Main {
 
-private Main() {
-    // Clase de arranque: no se instancia.
-}
+    private Main() {
+        // Clase de arranque: no se instancia.
+    }
 
-public static void main(String[] args) {
-    System.out.println("=== Airlines-poo ===");
-    System.out.println("Iniciando sistema con persistencia en SQL Server...");
-
-    // 1. Instanciar el repositorio
-    AirlineRepository repository = new AirlineRepository();
-
-    // 2. Generador con configuración del módulo (arranque 100, paso 10)
-    IdGenerator idGenerator = new IdGenerator(100, 10);
-
-    // 3. Inyección de dependencias en el servicio
-    AirlineService service = new AirlineService(repository, idGenerator);
-
-    // 4. Crear submenú del módulo y menú principal
-    Menu menu = new AirlineMenu(service);
-    MainMenu mainMenu = new MainMenu(List.of(menu));
-
-    // 5. Iniciar menú principal
-    mainMenu.run();
-}
+    /**
+     * Arranca la aplicación.
+     *
+     * @param args argumentos de la línea de comandos (no se usan)
+     */
+    public static void main(String[] args) {
+        System.out.println("=== Airlines-poo ===");
+        System.out.println("Proyecto base listo. El kit base (paquete core) está disponible.");
+        System.out.println("Cada módulo se integra en develop mediante Pull Request.");
+        // TODO (Módulo 3): ensamblar aquí lector, generadores, repositorios, servicios y menús.
+    }
 }
