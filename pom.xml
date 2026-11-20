@@ -23,10 +23,9 @@
     <dependencies>
         <!-- Solo se usa para probar el kit base del docente -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
+          <groupId>com.microsoft.sqlserver</groupId>
+          <artifactId>mssql-jdbc</artifactId>
+          <version>12.8.1.jre11</version>
         </dependency>
     </dependencies>
 

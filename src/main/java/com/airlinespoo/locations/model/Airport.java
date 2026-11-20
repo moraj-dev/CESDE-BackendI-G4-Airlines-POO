@@ -23,20 +23,20 @@ public Airport (UUID id, String name, City city) {
     setName(name);
     setCity(city);
 }
-@Override
-public UUID getId() {
+    @Override
+    public UUID getId() {
     return id;
 }
-public String getName() {
+    public String getName() {
     return name;
 }
-public void setName(String name) {
+    public void setName(String name) {
     this.name = Validator.requireText(name, "nombre de aeropuerto");
 }
-public City getCity() {
+    public City getCity() {
     return city;
 }
-public void setCity(City city) {
+    public void setCity(City city) {
     this.city = Objects.requireNonNull(city, "La ciudad del aeropuerto no puede ser nula");
 }
 
