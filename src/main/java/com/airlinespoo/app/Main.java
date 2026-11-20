@@ -20,17 +20,17 @@ public final class Main {
         System.out.println("=== Airlines-poo ===");
 
         // 1. Instanciar el repositorio
-        ReservationRepository reservationRepository = new ReservationRepository();
+        ReservationRepository reservationRepository = new ReservationRepository(customerRepository, flightRepository);
 
         // 2. Generador con configuración del módulo (arranque 1, paso 1)
         IdGenerator reservationIds = new IdGenerator(1, 1);
         IdGenerator detailIds = new IdGenerator(1, 1);
 
         // 3. Inyección de dependencias en el servicio
-        ReservationService reservationService = new ReservationService(reservationRepository);
+        ReservationService reservationService = new ReservationService(reservationRepository, reservationRepository, customerService, flightService);
 
         // 4. Iniciar menú interactivo
-        ReservationsMenu rMenu = new ReservationsMenu(reservationService);
+        ReservationsMenu rMenu = new ReservationsMenu(console, reservationService, customerService, flightService);
         rMenu.run();
 
     }

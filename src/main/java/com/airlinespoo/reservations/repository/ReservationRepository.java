@@ -19,8 +19,14 @@ import java.util.Optional;
 
 public class ReservationRepository implements IReservationRepository {
 
-    CustomerRepository customerRepository = new CustomerRepository();
-    FlightRepository flightRepository = new FlightRepository();
+    private final CustomerRepository customerRepository;
+    private final FlightRepository flightRepository;
+
+    public ReservationRepository(CustomerRepository customerRepository,
+                                 FlightRepository flightRepository) {
+        this.customerRepository = customerRepository;
+        this.flightRepository = flightRepository;
+    }
 
     // Nombres de las tablas en SQL Server
     private static final String SQL_TABLE_RESERVATION = "tblReservations";
