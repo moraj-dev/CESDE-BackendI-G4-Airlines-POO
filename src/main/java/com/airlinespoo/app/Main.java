@@ -23,41 +23,32 @@ import java.util.List;
  */
 public final class Main {
 
-private Main() {
-    // Clase de arranque: no se instancia.
-}
+    private Main() {
+        // Clase de arranque: no se instancia.
+    }
 
-public static void main(String[] args) {
-    System.out.println("=== Airlines-poo ===");
-    System.out.println("Iniciando sistema con persistencia en SQL Server...");
+    public static void main(String[] args) {
+        System.out.println("=== Airlines-poo ===");
+        System.out.println("Iniciando sistema con persistencia en SQL Server...");
 
-    // Módulo 3: Aerolíneas
-    AirlineRepository airlineRepository = new AirlineRepository();
-    IdGenerator airlineIds = new IdGenerator(100, 10);
-    AirlineService airlineService = new AirlineService(airlineRepository, airlineIds);
+        AirlineRepository airlineRepository = new AirlineRepository();
+        IdGenerator airlineIds = new IdGenerator(100, 10);
+        AirlineService airlineService = new AirlineService(airlineRepository, airlineIds);
 
-    // Módulo 2: Ubicaciones
-    CityRepository cityRepository = new CityRepository();
-    AirportRepository airportRepository = new AirportRepository();
-    LocationService locationService = new LocationService(cityRepository, airportRepository);
+        CityRepository cityRepository = new CityRepository();
+        AirportRepository airportRepository = new AirportRepository();
+        LocationService locationService = new LocationService(cityRepository, airportRepository);
 
-    // Módulo 4: Vuelos
-    FlightRepository flightRepository = new InMemoryFlightRepository();
-    FlightService flightService = new FlightService(
-            flightRepository, locationService, airlineService, new IdGenerator(1, 1));
+        FlightRepository flightRepository = new InMemoryFlightRepository();
+        FlightService flightService = new FlightService(
+                flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
-    // Crear los menús de los módulos disponibles
-    Menu airlineMenu = new AirlineMenu(airlineService);
-    Menu locationMenu = new LocationMenu(new ConsoleInput(), locationService);
-    Menu flightMenu = new FlightMenu(
-            new ConsoleInput(), flightService, locationService, airlineService);
+        Menu airlineMenu = new AirlineMenu(airlineService);
+        Menu locationMenu = new LocationMenu(new ConsoleInput(), locationService);
+        Menu flightMenu = new FlightMenu(
+                new ConsoleInput(), flightService, locationService, airlineService);
 
-    // Entregar los menús al menú principal y ejecutar
-    MainMenu mainMenu = new MainMenu(List.of(
-            airlineMenu,
-            locationMenu,
-            flightMenu
-    ));
-    mainMenu.run();
-}
+        MainMenu mainMenu = new MainMenu(List.of(airlineMenu, locationMenu, flightMenu));
+        mainMenu.run();
+    }
 }
