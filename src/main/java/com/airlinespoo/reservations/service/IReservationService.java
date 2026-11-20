@@ -19,7 +19,7 @@ public interface IReservationService {
     Reservation changeReservationFlight(int reservationId, int flightId);
     void cancelReservation(int id);
     List<ReservationDetail> listPassengers(int reservationId);
-    List<Reservation> listReservationsByCustomer(String customerId):
+    List<Reservation> listReservationsByCustomer(String customerId);
     List<Reservation> listReservationsByFlight(int flightId);
     boolean customerHasReservations(String customerId);
     boolean flightHasReservations(int flightId);

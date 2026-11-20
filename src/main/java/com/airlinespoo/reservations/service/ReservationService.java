@@ -124,7 +124,7 @@ public class ReservationService implements IReservationService{
         ensureFlightNotDeparted(flight);
         Flight newFlight = flightService.getFlight(flightId);
         if (newFlight.getId().equals(flight.getId())) {
-            throw new BusinessRuleException("El nuevo vuelo es el mismo que esta en la reserva.")
+            throw new BusinessRuleException("El nuevo vuelo es el mismo que esta en la reserva.");
         }
         ensureFlightNotDeparted(newFlight);
         for (Seat seat : reservation.getSeats()) {
