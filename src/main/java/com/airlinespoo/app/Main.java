@@ -41,14 +41,14 @@ public final class Main {
         // CustomerService customerService = new CustomerService(customerRepository);
 
         // Módulo 2: Ubicaciones
-        CityRepository cityRepository = new CityRepository();
-        AirportRepository airportRepository = new AirportRepository();
-        LocationService locationService = new LocationService(cityRepository, airportRepository);
+//        CityRepository cityRepository = new CityRepository();
+//        AirportRepository airportRepository = new AirportRepository();
+//        LocationService locationService = new LocationService(cityRepository, airportRepository);
 
         // Módulo 4: Vuelos
-        FlightRepository flightRepository = new InMemoryFlightRepository();
-        FlightService flightService = new FlightService(
-                flightRepository, locationService, airlineService, new IdGenerator(1, 1));
+//        FlightRepository flightRepository = new InMemoryFlightRepository();
+//        FlightService flightService = new FlightService(
+//                flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
         // Módulo 5: Reservas (pendiente de integrar con Clientes)
         // ReservationRepository reservationRepository = new ReservationRepository();
@@ -66,8 +66,8 @@ public final class Main {
         MainMenu mainMenu = new MainMenu(List.of(
                 airlineMenu,
                 // customerMenu,
-                locationMenu,
-                flightMenu
+//                locationMenu,
+//                flightMenu
                 // reservationMenu
         ));
         mainMenu.run();
