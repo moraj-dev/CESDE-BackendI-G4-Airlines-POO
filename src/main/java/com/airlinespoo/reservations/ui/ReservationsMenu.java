@@ -32,7 +32,7 @@ public class ReservationsMenu implements Menu {
     private final FlightService flightService;
 
 
-    public ReservationMenu(ConsoleInput console, IReservationService reservationService,
+    public ReservationsMenu(ConsoleInput console, IReservationService reservationService,
                            CustomerService customerService, FlightService flightService) {
         this.console = console;
         this.reservationService = reservationService;
