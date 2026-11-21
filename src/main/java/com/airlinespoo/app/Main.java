@@ -10,6 +10,7 @@ import com.airlinespoo.customers.repository.CountryRepository;
 import com.airlinespoo.customers.repository.CustomerRepository;
 import com.airlinespoo.customers.repository.DocumentTypeRepository;
 import com.airlinespoo.customers.service.CountryService;
+import com.airlinespoo.customers.service.CustomerSampleData;
 import com.airlinespoo.customers.service.CustomerService;
 import com.airlinespoo.customers.service.DocumentTypeService;
 import com.airlinespoo.customers.ui.CountryMenu;
@@ -53,6 +54,7 @@ public static void main(String[] args) {
     DocumentTypeService documentTypeService = new DocumentTypeService(documentTypeRepository, customerRepository);
     CustomerService customerService = new CustomerService(
         customerRepository, countryRepository, documentTypeRepository);
+    CustomerSampleData.load(countryRepository, documentTypeRepository, customerRepository);
 
     // Módulo 2: Ubicaciones
     CityRepository cityRepository = new CityRepository();
