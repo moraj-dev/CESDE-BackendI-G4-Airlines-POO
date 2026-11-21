@@ -16,8 +16,9 @@ import com.airlinespoo.customers.service.DocumentTypeService;
 import com.airlinespoo.customers.ui.CountryMenu;
 import com.airlinespoo.customers.ui.CustomerMenu;
 import com.airlinespoo.customers.ui.DocumentTypeMenu;
+import com.airlinespoo.flights.repository.DbConnection;
 import com.airlinespoo.flights.repository.FlightRepository;
-import com.airlinespoo.flights.repository.InMemoryFlightRepository;
+import com.airlinespoo.flights.repository.JdbcFlightRepository;
 import com.airlinespoo.flights.service.FlightService;
 import com.airlinespoo.flights.ui.FlightMenu;
 import com.airlinespoo.locations.repository.AirportRepository;
@@ -69,7 +70,8 @@ public static void main(String[] args) {
     AirlineService airlineService = new AirlineService(airlineRepository, airlineIds);
 
     // Módulo 4: Vuelos
-    FlightRepository flightRepository = new InMemoryFlightRepository();
+    DbConnection dbConnection = new DbConnection();
+    FlightRepository flightRepository = new JdbcFlightRepository(dbConnection);
     FlightService flightService = new FlightService(
         flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
@@ -106,7 +108,7 @@ public static void main(String[] args) {
     Menu documentTypeMenu = new DocumentTypeMenu(documentTypeService, console);
     Menu locationMenu = new LocationMenu(console, locationService);
     Menu airlineMenu = new AirlineMenu(airlineService);
-    Menu flightMenu = new FlightMenu(console, flightService, locationService, airlineService);
+    Menu flightMenu = new FlightMenu(console, flightService, locationService, airlineService, reservationService);
     Menu reservationMenu = new ReservationsMenu(console, reservationService, customerService, flightService);
 
     MainMenu mainMenu = new MainMenu(List.of(

@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public class DbConnection {
 
-    private static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_HOST = "localhost\\SQLEXPRESS";
     private static final String DEFAULT_PORT = "1433";
     private static final String DEFAULT_DATABASE = "AeroFastTrack";
     private static final String DEFAULT_USER = "sa";

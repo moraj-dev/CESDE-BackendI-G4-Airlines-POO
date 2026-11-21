@@ -10,6 +10,7 @@ import com.airlinespoo.customers.service.CustomerService;
 import com.airlinespoo.customers.model.Customer;
 import com.airlinespoo.flights.model.Flight;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,6 +32,10 @@ public class ReservationService implements IReservationService{
 
     private static final Comparator<Seat> SEAT_ORDER = Comparator.comparingInt(Seat::getSeatNumber)
         .thenComparing(Seat::getRowNumber);
+
+    private static final Comparator<Reservation> BY_DEPARTURE =
+        Comparator.comparing((Reservation r) -> r.getFlight().getDepartureDateTime())
+                .thenComparingInt(Reservation::getId);
 
     public ReservationService(IReservationRepository reservationRepository, CustomerService customerService,
                               FlightService flightService, IdGenerator reservationIds, IdGenerator detailIds) {
@@ -113,9 +118,12 @@ public class ReservationService implements IReservationService{
         Reservation reservation = getReservation(reservationId);
         Flight flight = reservation.getFlight();
         ensureFlightNotDeparted(flight);
-        findDetail(reservation, detailId);
+        ReservationDetail detail = findDetail(reservation, detailId);
+        if (detail.getSeat().equals(seat)) {
+            return reservation;
+        }
         ensureSeatExists(flight, seat);
-        ensureSeatFree(flight, seat, null);
+        ensureSeatFree(flight, seat, detailId);
         reservation.changeSeat(detailId, seat);
         return reservationRepository.update(reservation);
     }
@@ -157,7 +165,10 @@ public class ReservationService implements IReservationService{
     // Listar las reservas de un cliente
     @Override
     public List<Reservation> listReservationsByCustomer(String customerId) {
-        return reservationRepository.findByCustomer(customerService.getCustomer(customerId));
+        List<Reservation> list = new ArrayList<>(reservationRepository.
+            findByCustomer(customerService.getCustomer(customerId)));
+        list.sort(BY_DEPARTURE);
+        return list;
     }
 
     // Listar reservas por vuelo
@@ -227,13 +238,26 @@ public class ReservationService implements IReservationService{
         }
     }
 
-    // Valida que el asiento exista en un vuelo (por el layout de asientos)
+    // Valida que el vuelo no haya salido
     @Override
     public void ensureFlightNotDeparted(Flight flight) {
         if (flight.hasDeparted(LocalDateTime.now())) {
             throw new BusinessRuleException("El vuelo " + flight.getFlightName() + " ya salió.");
         }
     }
+
+    // Valida que, si se reprograma un vuelo y cambia la duracion, las sillas reservadas sigan haciendo parte del layout
+    public void ensureSeatsFitDuration(int flightId, Duration newDuration) {
+    SeatLayout newLayout = SeatLayout.fromDuration(newDuration);
+    List<Seat> invalid = listOccupiedSeats(flightId).stream()
+            .filter(seat -> !newLayout.contains(seat))
+            .toList();
+    if (!invalid.isEmpty()) {
+        throw new BusinessRuleException("No se puede reprogramar el vuelo: las sillas " + invalid
+                + " no existen en la nueva distribución (" + newLayout.getRows() + " filas x "
+                + newLayout.getColumns() + " columnas). Cambie los asientos reservados primero.");
+    }
+}
 
     // --------------- Metodos privados de Servicio ----------------------------
     private void ensureSeatExists (Flight flight, Seat seat) {

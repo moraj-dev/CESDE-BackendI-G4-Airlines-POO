@@ -34,9 +34,9 @@ public class ReservationRepository implements IReservationRepository {
     }
 
     // --------------- Conexion a SQL Server ------------------
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=AirlinesDB;encrypt=true;trustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=AeroFastTrack;encrypt=false;trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASSWORD = "TuPassword123";
+    private static final String PASSWORD = "Password123*";
 
     private Connection getConnection() {
         try {
@@ -66,7 +66,7 @@ public class ReservationRepository implements IReservationRepository {
                 throw translate(e, reservation);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al guardar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al guardar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -93,7 +93,7 @@ public class ReservationRepository implements IReservationRepository {
                 throw translate(e, reservation);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al actualizar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al actualizar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -123,10 +123,10 @@ public class ReservationRepository implements IReservationRepository {
                 return rows > 0;
             } catch (SQLException e) {
                 c.rollback();
-                throw new AirlinesException("Error de base de datos al eliminar la reserva" + e.getMessage(), e);
+                throw new AirlinesException("Error de base de datos al eliminar la reserva: " + e.getMessage(), e);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al eliminar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al eliminar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -142,7 +142,7 @@ public class ReservationRepository implements IReservationRepository {
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getLong(1) : 0;
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al contar las reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al contar las reservas: " + e.getMessage(), e);
         }
     }
 
@@ -159,12 +159,12 @@ public class ReservationRepository implements IReservationRepository {
 
     @Override
     public boolean existsByCustomer(Customer customer) {
-        return exists("SELECT 1 FROM ReservationId, CustomerId, FlightId WHERE CustomerId = ?", customer.getId());
+        return exists("SELECT 1 FROM " + SQL_TABLE_RESERVATION + " WHERE CustomerId = ?", customer.getId());
     }
 
     @Override
     public boolean existsByFlight(Flight flight) {
-        return exists("SELECT 1 FROM ReservationId, CustomerId, FlightId WHERE FlightId = ?", flight.getId());
+        return exists("SELECT 1 FROM " + SQL_TABLE_RESERVATION + " WHERE FlightId = ?", flight.getId());
     }
 
     // ------------ Metodos privados del Repositorio------------------------
@@ -184,7 +184,7 @@ public class ReservationRepository implements IReservationRepository {
             for (Brief b : brief) result.add(build(c, b));
             return result;
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al consultar reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al consultar reservas: " + e.getMessage(), e);
         }
     }
 
@@ -242,8 +242,8 @@ public class ReservationRepository implements IReservationRepository {
                 ps.setInt(2, r.getId());
                 ps.setString(3, d.getPassengerFullName());
                 ps.setString(4, d.getPassengerDocument());
-                ps.setString(5, d.getSeat().getRowNumber());
-                ps.setInt(6, d.getSeat().getSeatNumber());
+                ps.setInt(5, d.getSeat().getSeatNumber());
+                ps.setString(6, d.getSeat().getRowNumber());
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -265,7 +265,7 @@ public class ReservationRepository implements IReservationRepository {
                 return rs.next();
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al consultar reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al consultar reservas: " + e.getMessage(), e);
         }
     }
 
@@ -289,7 +289,7 @@ public class ReservationRepository implements IReservationRepository {
         if (code == 8152) {
             return new ValidationException("El nombre o el documento de un pasajero es demasiado largo.");
         }
-        return new AirlinesException("Error de base de datos al guardar la reserva" + e.getMessage(), e);
+        return new AirlinesException("Error de base de datos al guardar la reserva: " + e.getMessage(), e);
     }
 
 

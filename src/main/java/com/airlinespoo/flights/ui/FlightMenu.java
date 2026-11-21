@@ -11,6 +11,7 @@ import com.airlinespoo.flights.model.FlightReportRow;
 import com.airlinespoo.flights.service.FlightService;
 import com.airlinespoo.locations.model.Airport;
 import com.airlinespoo.locations.service.LocationService;
+import com.airlinespoo.reservations.service.IReservationService;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class FlightMenu implements Menu {
     private final FlightService flightService;
     private final LocationService locationService;
     private final AirlineService airlineService;
+    private final IReservationService reservationService;
 
     /**
      * Crea el menú de vuelos con sus dependencias.
@@ -35,13 +37,15 @@ public class FlightMenu implements Menu {
      * @param flightService servicio de vuelos
      * @param locationService servicio de ubicaciones
      * @param airlineService servicio de aerolíneas
+     * @param reservationService servicio de reservaciones
      */
     public FlightMenu(ConsoleInput console, FlightService flightService,
-                      LocationService locationService, AirlineService airlineService) {
+                      LocationService locationService, AirlineService airlineService, IReservationService reservationService) {
         this.console = console;
         this.flightService = flightService;
         this.locationService = locationService;
         this.airlineService = airlineService;
+        this.reservationService = reservationService;
     }
 
     /** {@inheritDoc} */
@@ -112,6 +116,7 @@ public class FlightMenu implements Menu {
         System.out.println(describe(flightService.getFlightByName(code)));
     }
 
+    // Inlcuye Regla de Reservas: las sillas ya reservadas deben seguir existiendo con la nueva duración
     private void rescheduleFlight() {
         String code = console.readRequiredText("Código del vuelo a reprogramar");
         Flight flight = flightService.getFlightByName(code);
@@ -119,7 +124,10 @@ public class FlightMenu implements Menu {
         LocalTime departureTime = console.readTime("Nueva hora de salida");
         LocalDate arrivalDate = console.readDate("Nueva fecha de llegada");
         LocalTime arrivalTime = console.readTime("Nueva hora de llegada");
-
+        Duration newDuration = Duration.between(departureDate.atTime(departureTime), arrivalDate.atTime(arrivalTime));
+        if (!newDuration.isNegative() && !newDuration.isZero()) {
+            reservationService.ensureSeatsFitDuration(flight.getId(), newDuration);
+        }
         Flight updated = flightService.updateFlight(flight.getId(), flight.getFlightName(),
                 flight.getDeparture().getId(), flight.getArrival().getId(),
                 departureDate, departureTime, arrivalDate, arrivalTime, flight.getAirline().getId());
