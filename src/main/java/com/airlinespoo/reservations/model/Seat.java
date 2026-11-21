@@ -15,15 +15,26 @@ seatNumber es el número de la fila
 
 public final class Seat {
 
-    private static final Pattern FORMAT = Pattern.compile("(\\d{1,2})([A-HJK])");
+    //Numeros validos para las filas (SeatNumber)
+    public static final int MIN_SEAT_NUMBER = 1;
+    public static final int MAX_SEAT_NUMBER = 40;
+
+    // Letras validas para las columnas (RowNumber)
+    public static final String LETTERS = "ABCEFGHJKLMNPRTUVWZ";
+
+    private static final Pattern FORMAT = Pattern.compile("(\\d{1,2})([A-z])");
     private static final int MAX_LENGTH_ROW = 2;
 
     private final String rowNumber;
     private final int seatNumber;
 
     public Seat (int seatNumber, String rowNumber) {
-        this.seatNumber = (int) Validator.requirePositive(seatNumber,"número de la silla");
-        this.rowNumber = Validator.requireText(rowNumber,"fila de la silla",MAX_LENGTH_ROW).toUpperCase();
+        this.seatNumber = (int) Validator.requireInRange(seatNumber,MIN_SEAT_NUMBER,MAX_SEAT_NUMBER,"número de la silla");
+        String letter = Validator.requireText(rowNumber,"fila de la silla",MAX_LENGTH_ROW).trim().toUpperCase();
+        if (letter.length() != 1 || LETTERS.indexOf(letter.charAt(0)) < 0) {
+            throw new ValidationException("La letra de la silla debe ser una de: " + LETTERS);
+        }
+        this.rowNumber = letter;
     }
 
     public int getSeatNumber() {

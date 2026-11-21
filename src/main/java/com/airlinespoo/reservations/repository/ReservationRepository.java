@@ -68,7 +68,7 @@ public class ReservationRepository implements IReservationRepository {
                 throw translate(e, reservation);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al guardar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al guardar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -95,7 +95,7 @@ public class ReservationRepository implements IReservationRepository {
                 throw translate(e, reservation);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al actualizar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al actualizar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -125,10 +125,10 @@ public class ReservationRepository implements IReservationRepository {
                 return rows > 0;
             } catch (SQLException e) {
                 c.rollback();
-                throw new AirlinesException("Error de base de datos al eliminar la reserva" + e.getMessage(), e);
+                throw new AirlinesException("Error de base de datos al eliminar la reserva: " + e.getMessage(), e);
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al eliminar la reserva" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al eliminar la reserva: " + e.getMessage(), e);
         }
     }
 
@@ -144,7 +144,7 @@ public class ReservationRepository implements IReservationRepository {
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getLong(1) : 0;
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al contar las reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al contar las reservas: " + e.getMessage(), e);
         }
     }
 
@@ -161,12 +161,12 @@ public class ReservationRepository implements IReservationRepository {
 
     @Override
     public boolean existsByCustomer(Customer customer) {
-        return exists("SELECT 1 FROM ReservationId, CustomerId, FlightId WHERE CustomerId = ?", customer.getId());
+        return exists("SELECT 1 FROM FROM " + SQL_TABLE_RESERVATION + " WHERE CustomerId = ?", customer.getId());
     }
 
     @Override
     public boolean existsByFlight(Flight flight) {
-        return exists("SELECT 1 FROM ReservationId, CustomerId, FlightId WHERE FlightId = ?", flight.getId());
+        return exists("SELECT 1 FROM " + SQL_TABLE_RESERVATION + " WHERE FlightId = ?", flight.getId());
     }
 
     // ------------ Metodos privados del Repositorio------------------------
@@ -186,7 +186,7 @@ public class ReservationRepository implements IReservationRepository {
             for (Brief b : brief) result.add(build(c, b));
             return result;
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al consultar reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al consultar reservas: " + e.getMessage(), e);
         }
     }
 
@@ -267,7 +267,7 @@ public class ReservationRepository implements IReservationRepository {
                 return rs.next();
             }
         } catch (SQLException e) {
-            throw new AirlinesException("Error de base de datos al consultar reservas" + e.getMessage(), e);
+            throw new AirlinesException("Error de base de datos al consultar reservas: " + e.getMessage(), e);
         }
     }
 
@@ -291,7 +291,7 @@ public class ReservationRepository implements IReservationRepository {
         if (code == 8152) {
             return new ValidationException("El nombre o el documento de un pasajero es demasiado largo.");
         }
-        return new AirlinesException("Error de base de datos al guardar la reserva" + e.getMessage(), e);
+        return new AirlinesException("Error de base de datos al guardar la reserva: " + e.getMessage(), e);
     }
 
 

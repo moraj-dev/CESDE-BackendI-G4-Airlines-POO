@@ -6,6 +6,7 @@ import com.airlinespoo.reservations.model.ReservationDetail;
 import com.airlinespoo.reservations.model.Seat;
 import com.airlinespoo.flights.model.Flight;
 
+import java.time.Duration;
 import java.util.List;
 
 public interface IReservationService {
@@ -29,4 +30,5 @@ public interface IReservationService {
     List<ManifestEntry> getFlightManifest(int flightId);
     void ensureSeatFree(Flight flight, Seat seat, Integer ignoreDetailId);
     void ensureFlightNotDeparted(Flight flight);
+    void ensureSeatsFitDuration(int flightId, Duration newDuration);
 }

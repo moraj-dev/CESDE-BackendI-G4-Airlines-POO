@@ -24,7 +24,7 @@ public class Reservation implements Identifiable<Integer> {
     private final List<ReservationDetail> details = new ArrayList<>();
 
     public Reservation(int id, Customer customer, Flight flight, ReservationDetail firstPassenger) {
-        this.id = (int) Validator.requirePositive(id,"número de reserva");;
+        this.id = (int) Validator.requirePositive(id,"número de reserva");
         this.customer = Validator.requireNotNull(customer, "cliente");
         this.flight = Validator.requireNotNull(flight, "vuelo");
         this.details.add(Validator.requireNotNull(firstPassenger,"primer pasajero"));
@@ -121,7 +121,7 @@ public class Reservation implements Identifiable<Integer> {
             .map(ReservationDetail::getSeat)
             .sorted(Comparator.comparing(Seat::getSeatNumber)
                 .thenComparing(Seat::getRowNumber))
-            .collect(Collectors.toCollection(TreeSet::new));
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     // Buscar id del objeto ReservationDetail

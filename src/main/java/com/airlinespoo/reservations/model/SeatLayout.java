@@ -14,12 +14,10 @@ import java.time.Duration;
 *   más de 6 h -----------------------> 40 fil x 10 col = 400 sillas
 *
 * Las filas son los números (desde 1 hasta 40) y las columnas son las letras
-*   (A,B,C,D,E,F,G,H,J,K)
+*   (A,B,C,E,F,G,H,J,K,L)
  */
 
 public final class SeatLayout {
-
-    private static final String LETTERS = "ABCEFGHJKLMNPRTUVWZ";
 
     private final int rows;
     private final int columns;
@@ -61,7 +59,7 @@ public final class SeatLayout {
 
     // Buscar la letra de la columna - index: posición de la columna (0 = primera letra habilitada)
     public String columnLetter(int index) {
-        return String.valueOf(LETTERS.charAt(index));
+        return String.valueOf(Seat.LETTERS.charAt(index));
     }
 
     // Indica las letras válidas en un avión
@@ -77,11 +75,9 @@ public final class SeatLayout {
     // Valida si el asiento existe y es válido dentro de la distribución del avión
     public boolean contains(Seat seat) {
         String letter = seat.getRowNumber();
-        int col = LETTERS.indexOf(letter); // letra está prohibida da -1
-        return letter.length() == 1
-            && col >= 0
+        int col = Seat.LETTERS.indexOf(letter); // letra está prohibida da -1
+        return col >= 0
             && col < columns
-            && seat.getSeatNumber() >= 1
             && seat.getSeatNumber() <= rows;
     }
 }
