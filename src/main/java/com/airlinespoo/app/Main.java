@@ -3,14 +3,36 @@ package com.airlinespoo.app;
 import com.airlinespoo.airlines.repository.AirlineRepository;
 import com.airlinespoo.airlines.service.AirlineService;
 import com.airlinespoo.airlines.ui.AirlineMenu;
+import com.airlinespoo.core.ui.ConsoleInput;
 import com.airlinespoo.core.ui.Menu;
 import com.airlinespoo.core.util.IdGenerator;
+import com.airlinespoo.customers.repository.CountryRepository;
+import com.airlinespoo.customers.repository.CustomerRepository;
+import com.airlinespoo.customers.repository.DocumentTypeRepository;
+import com.airlinespoo.customers.service.CountryService;
+import com.airlinespoo.customers.service.CustomerSampleData;
+import com.airlinespoo.customers.service.CustomerService;
+import com.airlinespoo.customers.service.DocumentTypeService;
+import com.airlinespoo.customers.ui.CountryMenu;
+import com.airlinespoo.customers.ui.CustomerMenu;
+import com.airlinespoo.customers.ui.DocumentTypeMenu;
+import com.airlinespoo.flights.repository.FlightRepository;
+import com.airlinespoo.flights.repository.InMemoryFlightRepository;
+import com.airlinespoo.flights.service.FlightService;
+import com.airlinespoo.flights.ui.FlightMenu;
+import com.airlinespoo.locations.repository.AirportRepository;
+import com.airlinespoo.locations.repository.CityRepository;
+import com.airlinespoo.locations.service.LocationService;
+import com.airlinespoo.locations.ui.LocationMenu;
+import com.airlinespoo.reservations.repository.ReservationRepository;
+import com.airlinespoo.reservations.service.ReservationService;
+import com.airlinespoo.reservations.ui.ReservationsMenu;
 
 import java.util.List;
 
 /**
  * Punto de entrada de Airlines-poo.
- * Ensambla todos los módulos del sistema y arranca el menú principal.
+ * Ensambla los módulos y arranca el menú principal.
  */
 public final class Main {
 
@@ -20,47 +42,58 @@ private Main() {
 
 public static void main(String[] args) {
     System.out.println("=== Airlines-poo ===");
-    System.out.println("Iniciando sistema con persistencia en SQL Server...");
+    System.out.println("Iniciando sistema...");
 
-    // 1. Repositorios y Servicios independientes
-    // --- Módulo 3: Aerolíneas ---
+    ConsoleInput console = new ConsoleInput();
+
+    // Módulo 1: Clientes y catálogos
+    CustomerRepository customerRepository = new CustomerRepository();
+    CountryRepository countryRepository = new CountryRepository();
+    DocumentTypeRepository documentTypeRepository = new DocumentTypeRepository();
+    CountryService countryService = new CountryService(countryRepository, customerRepository);
+    DocumentTypeService documentTypeService = new DocumentTypeService(documentTypeRepository, customerRepository);
+    CustomerService customerService = new CustomerService(
+        customerRepository, countryRepository, documentTypeRepository);
+    CustomerSampleData.load(countryRepository, documentTypeRepository, customerRepository);
+
+    // Módulo 2: Ubicaciones
+    CityRepository cityRepository = new CityRepository();
+    AirportRepository airportRepository = new AirportRepository();
+    LocationService locationService = new LocationService(cityRepository, airportRepository);
+
+    // Módulo 3: Aerolíneas
     AirlineRepository airlineRepository = new AirlineRepository();
     IdGenerator airlineIds = new IdGenerator(100, 10);
     AirlineService airlineService = new AirlineService(airlineRepository, airlineIds);
 
-    // --- Módulo 1: Clientes (descomentar cuando suban customers) ---
-    // CustomerRepository customerRepository = new CustomerRepository();
-    // CustomerService customerService = new CustomerService(customerRepository);
+    // Módulo 4: Vuelos
+    FlightRepository flightRepository = new InMemoryFlightRepository();
+    FlightService flightService = new FlightService(
+        flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
-    // --- Módulo 2: Ubicaciones (descomentar cuando suban locations) ---
-    // LocationRepository locationRepository = new LocationRepository();
-    // LocationService locationService = new LocationService(locationRepository);
+    // Módulo 5: Reservas
+    ReservationRepository reservationRepository = new ReservationRepository(customerRepository,flightRepository);
+    ReservationService reservationService = new ReservationService(reservationRepository, customerService,
+        flightService, new IdGenerator(1, 1), new IdGenerator(1, 1));
 
-    // 2. Servicios dependientes
-    // --- Módulo 4: Vuelos (descomentar cuando suban flights) ---
-    // FlightRepository flightRepository = new FlightRepository();
-    // FlightService flightService = new FlightService(flightRepository, locationService, airlineService);
-
-    // --- Módulo 5: Reservas (descomentar cuando estén Clientes y Vuelos) ---
-    // ReservationRepository reservationRepository = new ReservationRepository();
-    // ReservationService reservationService = new ReservationService(reservationRepository, customerService, flightService);
-
-    // 3. Crear los menús de cada módulo
+    // Menús de los módulos
+    Menu customerMenu = new CustomerMenu(customerService, console);
+    Menu countryMenu = new CountryMenu(countryService, console);
+    Menu documentTypeMenu = new DocumentTypeMenu(documentTypeService, console);
+    Menu locationMenu = new LocationMenu(console, locationService);
     Menu airlineMenu = new AirlineMenu(airlineService);
-    // Menu customerMenu = new CustomerMenu(customerService);
-    // Menu locationMenu = new LocationMenu(locationService);
-    // Menu flightMenu = new FlightMenu(flightService);
-    // Menu reservationMenu = new ReservationsMenu(reservationService, customerService, flightService);
+    Menu flightMenu = new FlightMenu(console, flightService, locationService, airlineService);
+    Menu reservationMenu = new ReservationsMenu(console, reservationService, customerService, flightService);
 
-    // 4. Entregar los menús al Menú Principal y ejecutar
     MainMenu mainMenu = new MainMenu(List.of(
-        airlineMenu
-        // customerMenu,
-        // locationMenu,
-        // flightMenu,
-        // reservationMenu
+        customerMenu,
+        countryMenu,
+        documentTypeMenu,
+        locationMenu,
+        airlineMenu,
+        flightMenu,
+        reservationMenu
     ));
     mainMenu.run();
 }
 }
-
