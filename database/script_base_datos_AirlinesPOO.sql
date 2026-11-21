@@ -153,3 +153,37 @@ EXEC dbo.uspCrearAerolineas @name = 'LATAM Airlines';
 EXEC dbo.uspCrearAerolineas @name = 'Copa Airlines';
 END
 GO
+-------------------------------------------------------
+--ALIMENTAR LA BASE DE DATOS
+---------------------------
+
+USE AeroFastTrack;
+GO
+
+-- 1. Poblar Tipos de Documento (dbo.tblDocumentsType)
+IF NOT EXISTS (SELECT 1 FROM dbo.tblDocumentsType WHERE TypeId = 'CC')
+    INSERT INTO dbo.tblDocumentsType (TypeId, Description) VALUES ('CC', 'Cédula de Ciudadanía');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblDocumentsType WHERE TypeId = 'CE')
+    INSERT INTO dbo.tblDocumentsType (TypeId, Description) VALUES ('CE', 'Cédula de Extranjería');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblDocumentsType WHERE TypeId = 'PA')
+    INSERT INTO dbo.tblDocumentsType (TypeId, Description) VALUES ('PA', 'Pasaporte');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblDocumentsType WHERE TypeId = 'TI')
+    INSERT INTO dbo.tblDocumentsType (TypeId, Description) VALUES ('TI', 'Tarjeta de Identidad');
+GO
+
+-- 2. Poblar Países básicos (dbo.tblCountries) incluyendo el 33 que probaste y 169 (Colombia)
+IF NOT EXISTS (SELECT 1 FROM dbo.tblCountries WHERE CountryId = 33)
+    INSERT INTO dbo.tblCountries (CountryId, Name) VALUES (33, 'Francia');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblCountries WHERE CountryId = 57)
+    INSERT INTO dbo.tblCountries (CountryId, Name) VALUES (57, 'Colombia');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblCountries WHERE CountryId = 169)
+    INSERT INTO dbo.tblCountries (CountryId, Name) VALUES (169, 'Colombia');
+
+IF NOT EXISTS (SELECT 1 FROM dbo.tblCountries WHERE CountryId = 1)
+    INSERT INTO dbo.tblCountries (CountryId, Name) VALUES (1, 'Estados Unidos');
+GO
