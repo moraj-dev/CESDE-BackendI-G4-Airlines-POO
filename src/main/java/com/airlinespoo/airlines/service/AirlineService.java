@@ -6,6 +6,7 @@ import com.airlinespoo.core.util.IdGenerator;
 import com.airlinespoo.core.util.Validator;
 import java.util.Comparator;
 import java.util.List;
+import com.airlinespoo.core.exception.NotFoundException;
 
 /**
  * Servicio de lógica de negocio para la gestión de aerolíneas.
@@ -24,7 +25,7 @@ public AirlineService(AirlineRepository repository, IdGenerator idGenerator) {
 public Airline createAirline(String name) {
     Validator.requireText(name, "nombre de la aerolínea", Airline.MAX_NAME_LENGTH);
     if (repository.existsByName(name)) {
-        throw new IllegalArgumentException("Ya existe una aerolínea con el nombre: " + name);
+        throw new NotFoundException("Ya existe una aerolínea con el nombre: " + name);
     }
     int id = idGenerator.next();
     Airline airline = new Airline(id, name);
@@ -33,7 +34,7 @@ public Airline createAirline(String name) {
 
 public Airline getAirline(int id) {
     return repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("No se encontró la aerolínea con ID: " + id));
+        .orElseThrow(() -> new NotFoundException("No se encontró la aerolínea con ID: " + id));
 }
 
 public List<Airline> listAirlines() {
@@ -48,7 +49,7 @@ public Airline renameAirline(int id, String newName) {
 
     repository.findByName(newName).ifPresent(other -> {
         if (!other.getId().equals(existing.getId())) {
-            throw new IllegalArgumentException("Ya existe otra aerolínea con el nombre: " + newName);
+            throw new NotFoundException("Ya existe otra aerolínea con el nombre: " + newName);
         }
     });
 
