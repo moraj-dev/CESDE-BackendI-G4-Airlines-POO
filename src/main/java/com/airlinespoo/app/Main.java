@@ -1,12 +1,14 @@
 package com.airlinespoo.app;
 
+import com.airlinespoo.core.util.IdGenerator;
+import com.airlinespoo.reservations.repository.ReservationRepository;
+import com.airlinespoo.reservations.service.ReservationService;
+import com.airlinespoo.reservations.ui.ReservationsMenu;
+
+
 /**
  * Punto de entrada de Airlines-poo.
  *
- * <p>Esta es una clase <b>provisional</b> que entrega el docente para que el proyecto se
- * pueda ejecutar desde el primer día. El estudiante del Módulo 3 la reemplaza al final
- * por la versión que ensambla todos los módulos (lector de consola, generadores de ids,
- * repositorios, servicios, datos de ejemplo y menús) y arranca el menú principal.</p>
  */
 public final class Main {
 
@@ -14,15 +16,22 @@ public final class Main {
         // Clase de arranque: no se instancia.
     }
 
-    /**
-     * Arranca la aplicación.
-     *
-     * @param args argumentos de la línea de comandos (no se usan)
-     */
     public static void main(String[] args) {
         System.out.println("=== Airlines-poo ===");
-        System.out.println("Proyecto base listo. El kit base (paquete core) está disponible.");
-        System.out.println("Cada módulo se integra en develop mediante Pull Request.");
-        // TODO (Módulo 3): ensamblar aquí lector, generadores, repositorios, servicios y menús.
+
+        // 1. Instanciar el repositorio
+        ReservationRepository reservationRepository = new ReservationRepository(customerRepository, flightRepository);
+
+        // 2. Generador con configuración del módulo (arranque 1, paso 1)
+        IdGenerator reservationIds = new IdGenerator(1, 1);
+        IdGenerator detailIds = new IdGenerator(1, 1);
+
+        // 3. Inyección de dependencias en el servicio
+        ReservationService reservationService = new ReservationService(reservationRepository, reservationRepository, customerService, flightService);
+
+        // 4. Iniciar menú interactivo
+        ReservationsMenu rMenu = new ReservationsMenu(console, reservationService, customerService, flightService);
+        rMenu.run();
+
     }
 }
