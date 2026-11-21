@@ -49,8 +49,8 @@ public static void main(String[] args) {
     CustomerRepository customerRepository = new CustomerRepository();
     CountryRepository countryRepository = new CountryRepository();
     DocumentTypeRepository documentTypeRepository = new DocumentTypeRepository();
-    CountryService countryService = new CountryService(countryRepository);
-    DocumentTypeService documentTypeService = new DocumentTypeService(documentTypeRepository);
+    CountryService countryService = new CountryService(countryRepository, customerRepository);
+    DocumentTypeService documentTypeService = new DocumentTypeService(documentTypeRepository, customerRepository);
     CustomerService customerService = new CustomerService(
         customerRepository, countryRepository, documentTypeRepository);
 

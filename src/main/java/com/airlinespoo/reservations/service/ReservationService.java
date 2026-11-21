@@ -26,8 +26,8 @@ public class ReservationService implements IReservationService{
     private final IReservationRepository reservationRepository;
     private final CustomerService customerService;
     private final FlightService flightService;
-    private final IdGenerator reservationIds = new IdGenerator();
-    private final IdGenerator detailIds = new IdGenerator();
+    private final IdGenerator reservationIds ;
+    private final IdGenerator detailIds;
 
     private static final Comparator<Seat> SEAT_ORDER = Comparator.comparingInt(Seat::getSeatNumber)
         .thenComparing(Seat::getRowNumber);
@@ -175,7 +175,7 @@ public class ReservationService implements IReservationService{
     // Valida si un vuelo tiene reservas
     @Override
     public boolean flightHasReservations(int flightId) {
-        return reservationRepository.existsByFlight(flightService.getFlight(flightId));;
+        return reservationRepository.existsByFlight(flightService.getFlight(flightId));
     }
 
     // Lista de asientos ocupados por vuelo, ordenadas por numero y letra
