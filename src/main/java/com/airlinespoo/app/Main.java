@@ -24,6 +24,8 @@ import com.airlinespoo.locations.repository.AirportRepository;
 import com.airlinespoo.locations.repository.CityRepository;
 import com.airlinespoo.locations.service.LocationService;
 import com.airlinespoo.locations.ui.LocationMenu;
+import com.airlinespoo.reservations.model.Reservation;
+import com.airlinespoo.reservations.model.ReservationDetail;
 import com.airlinespoo.reservations.repository.ReservationRepository;
 import com.airlinespoo.reservations.service.ReservationService;
 import com.airlinespoo.reservations.ui.ReservationsMenu;
@@ -72,9 +74,31 @@ public static void main(String[] args) {
         flightRepository, locationService, airlineService, new IdGenerator(1, 1));
 
     // Módulo 5: Reservas
-    ReservationRepository reservationRepository = new ReservationRepository(customerRepository,flightRepository);
-    ReservationService reservationService = new ReservationService(reservationRepository, customerService,
-        flightService, new IdGenerator(1, 1), new IdGenerator(1, 1));
+    ReservationRepository reservationRepository = new ReservationRepository(customerRepository, flightRepository);
+
+    IdGenerator reservationIds = new IdGenerator(1, 1);
+    IdGenerator detailIds = new IdGenerator(1, 1);
+
+    // Buscar los IDs máximos existentes usando ciclos for
+    int maxReservationId = 0;
+    int maxDetailId = 0;
+
+    for (Reservation r : reservationRepository.findAll()) {
+        if (r.getId() > maxReservationId) {
+            maxReservationId = r.getId();
+        }
+        for (ReservationDetail d : r.getDetails()) {
+            if (d.getId() > maxDetailId) {
+                maxDetailId = d.getId();
+            }
+        }
+    }
+
+    reservationIds.syncWith(maxReservationId);
+    detailIds.syncWith(maxDetailId);
+
+    ReservationService reservationService = new ReservationService(
+        reservationRepository, customerService, flightService, reservationIds, detailIds);
 
     // Menús de los módulos
     Menu customerMenu = new CustomerMenu(customerService, console);
